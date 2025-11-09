@@ -131,23 +131,6 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
 
         <Card
           className="cursor-pointer hover:shadow-lg transition"
-          onClick={() => onNavigate('pos')}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="font-semibold">Point of Sale</p>
-                <p className="text-sm text-gray-500">Sell products</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          className="cursor-pointer hover:shadow-lg transition"
           onClick={() => onNavigate('inventory')}
         >
           <div className="flex items-center justify-between">
@@ -182,40 +165,6 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
 
         <Card
           className="cursor-pointer hover:shadow-lg transition"
-          onClick={() => onNavigate('fund-transfers')}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
-                <ArrowRightLeft className="w-5 h-5 text-pink-600" />
-              </div>
-              <div>
-                <p className="font-semibold">Fund Transfers</p>
-                <p className="text-sm text-gray-500">Inter-store money transfers</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          className="cursor-pointer hover:shadow-lg transition"
-          onClick={() => onNavigate('inventory-transfers')}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-                <Package className="w-5 h-5 text-teal-600" />
-              </div>
-              <div>
-                <p className="font-semibold">Inventory Transfers</p>
-                <p className="text-sm text-gray-500">Transfer gold bars between stores</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          className="cursor-pointer hover:shadow-lg transition"
           onClick={() => onNavigate('reports')}
         >
           <div className="flex items-center justify-between">
@@ -226,23 +175,6 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
               <div>
                 <p className="font-semibold">Analytics & Reports</p>
                 <p className="text-sm text-gray-500">View detailed analytics</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          className="cursor-pointer hover:shadow-lg transition"
-          onClick={() => onNavigate('coupons')}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-                <Tag className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <p className="font-semibold">Coupons & Promotions</p>
-                <p className="text-sm text-gray-500">Manage discount codes</p>
               </div>
             </div>
           </div>
