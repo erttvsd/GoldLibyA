@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Package, TrendingUp, TrendingDown, Plus } from 'lucide-react';
+import { ArrowLeft, Package, TrendingUp, TrendingDown, Plus, Eye, EyeOff } from 'lucide-react';
 import { Card, Button } from '../../components/ui';
 import { AddInventoryModal } from '../../components/store/AddInventoryModal';
 import { supabase } from '../../lib/supabase';
@@ -16,6 +16,7 @@ interface InventoryItem {
   purity: string;
   quantity: number;
   unit_price: number;
+  show_on_marketplace?: boolean;
 }
 
 export const StoreInventoryPage = ({ onBack }: StoreInventoryPageProps) => {
@@ -58,6 +59,21 @@ export const StoreInventoryPage = ({ onBack }: StoreInventoryPageProps) => {
       console.error('Error loading inventory:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleMarketplace = async (itemId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('inventory')
+        .update({ show_on_marketplace: !currentStatus })
+        .eq('id', itemId);
+
+      if (error) throw error;
+
+      await loadInventory();
+    } catch (error) {
+      console.error('Error toggling marketplace visibility:', error);
     }
   };
 
@@ -157,10 +173,30 @@ export const StoreInventoryPage = ({ onBack }: StoreInventoryPageProps) => {
                 </div>
               </div>
               {item.products?.base_price_lyd && (
-                <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Unit Price: <span className="font-semibold">{item.products.base_price_lyd} LYD</span>
                   </p>
+                  <button
+                    onClick={() => toggleMarketplace(item.id, item.show_on_marketplace || false)}
+                    className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      item.show_on_marketplace
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                    }`}
+                  >
+                    {item.show_on_marketplace ? (
+                      <>
+                        <Eye className="w-4 h-4" />
+                        <span>On Store</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-4 h-4" />
+                        <span>Hidden</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               )}
             </Card>
