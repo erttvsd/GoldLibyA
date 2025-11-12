@@ -97,6 +97,48 @@ export const marketplaceService = {
         throw new Error('Insufficient quantity available');
       }
 
+      // Get inventory_id from store_marketplace_items
+      const { data: marketItem } = await supabase
+        .from('store_marketplace_items')
+        .select('inventory_id')
+        .eq('id', itemId)
+        .maybeSingle();
+
+      if (!marketItem?.inventory_id) {
+        throw new Error('Inventory not linked to this item');
+      }
+
+      // Get store user (clerk) for the sale
+      const { data: storeProfile } = await supabase
+        .from('store_profiles')
+        .select('user_id')
+        .eq('store_id', item.store_id)
+        .maybeSingle();
+
+      if (!storeProfile) {
+        throw new Error('Store not found');
+      }
+
+      // Process sale using the database function
+      const { data: saleResult, error: saleError } = await supabase.rpc(
+        'process_inventory_sale',
+        {
+          p_store_id: item.store_id,
+          p_clerk_id: storeProfile.user_id,
+          p_customer_id: user.id,
+          p_items: [
+            {
+              inventory_id: marketItem.inventory_id,
+              quantity: quantity,
+            },
+          ],
+          p_notes: `${deliveryMethod === 'pickup' ? 'Store Pickup' : 'Delivery'} - ${paymentMethod} payment${notes ? ` - ${notes}` : ''}`,
+        }
+      );
+
+      if (saleError) throw saleError;
+
+      // Create marketplace order record
       const totalPriceLyd = item.price_lyd * quantity;
       const totalPriceUsd = item.price_usd * quantity;
 
@@ -109,7 +151,7 @@ export const marketplaceService = {
           quantity,
           total_price_lyd: totalPriceLyd,
           total_price_usd: totalPriceUsd,
-          order_status: 'pending',
+          order_status: 'completed',
           payment_method: paymentMethod,
           delivery_method: deliveryMethod,
           notes,
@@ -119,6 +161,7 @@ export const marketplaceService = {
 
       if (error) throw error;
 
+      // Update marketplace item quantity
       await supabase
         .from('store_marketplace_items')
         .update({ quantity_available: item.quantity_available - quantity })
