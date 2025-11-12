@@ -15,6 +15,7 @@ import { StoreStaffPage } from './StoreStaffPage';
 import { StoreAnnouncementsPage } from './StoreAnnouncementsPage';
 import { StoreLocationChangePage } from './StoreLocationChangePage';
 import { StoreBankAccountsPage } from './StoreBankAccountsPage';
+import { StoreMarketplacePage } from './StoreMarketplacePage';
 import { storeService } from '../../services/store.service';
 import { Card } from '../../components/ui';
 
@@ -80,6 +81,8 @@ export const StoreConsolePage = ({ onBack }: StoreConsolePageProps) => {
     switch (currentPage) {
       case 'dashboard':
         return <StoreDashboardPage storeId={storeId} onNavigate={setCurrentPage} />;
+      case 'marketplace':
+        return <StoreMarketplacePage storeId={storeId} onBack={() => setCurrentPage('dashboard')} />;
       case 'customers':
         return <StoreCustomerDeskPage storeId={storeId} onBack={() => setCurrentPage('dashboard')} />;
       case 'finance':

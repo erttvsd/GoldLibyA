@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Store, Calendar, DollarSign, Package, TrendingUp, Users, Wallet, ArrowRightLeft, BarChart3, Tag, Shield, Megaphone, MapPin, Building2 } from 'lucide-react';
+import { Store, Calendar, DollarSign, Package, TrendingUp, Users, Wallet, ArrowRightLeft, BarChart3, Tag, Shield, Megaphone, MapPin, Building2, ShoppingBag, ChevronRight } from 'lucide-react';
 import { Card, Button } from '../../components/ui';
 import { storeService } from '../../services/store.service';
+import { marketplaceService, MarketplaceItem } from '../../services/marketplace.service';
+import { ItemPurchaseModal } from '../../components/store/ItemPurchaseModal';
 
 interface StoreDashboardPageProps {
   storeId: string;
@@ -12,6 +14,8 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
   const [storeInfo, setStoreInfo] = useState<any>(null);
+  const [featuredItems, setFeaturedItems] = useState<MarketplaceItem[]>([]);
+  const [selectedItem, setSelectedItem] = useState<MarketplaceItem | null>(null);
 
   useEffect(() => {
     loadDashboard();
@@ -19,13 +23,15 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
 
   const loadDashboard = async () => {
     try {
-      const [statsRes, storeRes] = await Promise.all([
+      const [statsRes, storeRes, itemsRes] = await Promise.all([
         storeService.getDashboardStats(storeId),
         storeService.getStoreDetails(storeId),
+        marketplaceService.getMarketplaceItems(storeId, true),
       ]);
 
       if (statsRes.data) setStats(statsRes.data);
       if (storeRes.data) setStoreInfo(storeRes.data);
+      if (itemsRes.data) setFeaturedItems(itemsRes.data.slice(0, 6));
     } catch (error) {
       console.error('Error loading dashboard:', error);
     } finally {
@@ -90,6 +96,53 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
             <DollarSign className="w-12 h-12 opacity-30" />
           </div>
         </Card>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold flex items-center">
+            <ShoppingBag className="w-5 h-5 mr-2" />
+            Featured Items
+          </h2>
+          <Button onClick={() => onNavigate('marketplace')} variant="ghost" size="sm">
+            View All
+            <ChevronRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          {featuredItems.map((item) => (
+            <Card
+              key={item.id}
+              className="cursor-pointer hover:shadow-lg transition"
+              onClick={() => setSelectedItem(item)}
+            >
+              <div className="space-y-2">
+                <div className="flex items-start justify-between">
+                  <div className="flex-grow">
+                    <p className="font-semibold text-sm line-clamp-1">{item.item_name}</p>
+                    <p className="text-xs text-gray-500">
+                      {item.weight}g • {item.purity}
+                    </p>
+                  </div>
+                  <span className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 px-2 py-0.5 rounded-full">
+                    {item.metal_type}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <div>
+                    <p className="text-xs text-gray-500">Price</p>
+                    <p className="font-bold text-sm">{item.price_lyd.toFixed(0)} LYD</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500">Stock</p>
+                    <p className="font-semibold text-sm">{item.quantity_available}</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -248,6 +301,17 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
           </div>
         </Card>
       </div>
+
+      {selectedItem && (
+        <ItemPurchaseModal
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onSuccess={() => {
+            setSelectedItem(null);
+            loadDashboard();
+          }}
+        />
+      )}
     </div>
   );
 };
