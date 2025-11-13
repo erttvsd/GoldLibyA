@@ -14,6 +14,7 @@ import { DigitalTransferPage } from './pages/wallet/DigitalTransferPage';
 import { TransferBalancePage } from './pages/wallet/TransferBalancePage';
 import { BookAppointmentPage } from './pages/wallet/BookAppointmentPage';
 import { InvestmentPlannerPage } from './pages/wallet/InvestmentPlannerPage';
+import { MyBarsPage } from './pages/wallet/MyBarsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { KYCPage } from './pages/profile/KYCPage';
 import { StoreKYCPage } from './pages/profile/StoreKYCPage';
@@ -184,6 +185,13 @@ function AppContent() {
           return (
             <InvestmentPlannerPage
               onNavigate={navigate}
+              onBack={() => navigate('wallet')}
+            />
+          );
+        }
+        if (subPage === 'myBars') {
+          return (
+            <MyBarsPage
               onBack={() => navigate('wallet')}
             />
           );

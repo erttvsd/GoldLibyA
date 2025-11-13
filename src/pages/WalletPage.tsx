@@ -216,6 +216,15 @@ export const WalletPage = ({ onNavigate, subPage, subPageProps }: WalletPageProp
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Button
+          onClick={() => onNavigate('wallet', 'myBars')}
+          variant="outline"
+          size="md"
+          fullWidth
+          icon={Package}
+        >
+          My Bars
+        </Button>
+        <Button
           onClick={() => onNavigate('wallet', 'digitalTransfer')}
           variant="outline"
           size="md"
