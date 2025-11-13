@@ -16,6 +16,7 @@ import { StoreAnnouncementsPage } from './StoreAnnouncementsPage';
 import { StoreLocationChangePage } from './StoreLocationChangePage';
 import { StoreBankAccountsPage } from './StoreBankAccountsPage';
 import { StoreMarketplacePage } from './StoreMarketplacePage';
+import { StoreBarTrackingPage } from './StoreBarTrackingPage';
 import { storeService } from '../../services/store.service';
 import { Card } from '../../components/ui';
 
@@ -45,7 +46,9 @@ export const StoreConsolePage = ({ onBack }: StoreConsolePageProps) => {
       }
 
       // Use first store if user has multiple
-      setStoreId(data[0].store_id);
+      const storeIdValue = data[0].store_id;
+      setStoreId(storeIdValue);
+      localStorage.setItem('current_store_id', storeIdValue);
     } catch (err: any) {
       setError(err.message || 'Failed to load store information');
     } finally {
@@ -113,6 +116,8 @@ export const StoreConsolePage = ({ onBack }: StoreConsolePageProps) => {
         return <StoreLocationChangePage storeId={storeId} onBack={() => setCurrentPage('dashboard')} />;
       case 'bank-accounts':
         return <StoreBankAccountsPage storeId={storeId} onBack={() => setCurrentPage('dashboard')} />;
+      case 'bar-tracking':
+        return <StoreBarTrackingPage onBack={() => setCurrentPage('dashboard')} />;
       default:
         return <StoreDashboardPage storeId={storeId} onNavigate={setCurrentPage} />;
     }

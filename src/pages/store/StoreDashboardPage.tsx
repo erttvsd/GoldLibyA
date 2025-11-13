@@ -201,6 +201,23 @@ export const StoreDashboardPage = ({ storeId, onNavigate }: StoreDashboardPagePr
 
         <Card
           className="cursor-pointer hover:shadow-lg transition"
+          onClick={() => onNavigate('bar-tracking')}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                <Shield className="w-5 h-5 text-yellow-600" />
+              </div>
+              <div>
+                <p className="font-semibold">Bar Tracking</p>
+                <p className="text-sm text-gray-500">Track bars with XRF & buyer info</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card
+          className="cursor-pointer hover:shadow-lg transition"
           onClick={() => onNavigate('finance')}
         >
           <div className="flex items-center justify-between">
